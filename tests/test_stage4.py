@@ -85,7 +85,8 @@ class TestElevatorReopen(unittest.TestCase):
         e._action_timer = 1
         self.assertTrue(e.request_reopen())
         self.assertEqual(e.state, ElevatorState.OPENING)
-        self.assertEqual(e._action_timer, 0)
+        # Reversing halfway through closing preserves the physical aperture.
+        self.assertAlmostEqual(e.door_open_fraction, 0.5)
 
     def test_request_reopen_ignored_when_not_closing(self):
         """非CLOSING状态下请求重开无效。"""

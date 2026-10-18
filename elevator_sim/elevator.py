@@ -303,8 +303,10 @@ class Elevator:
         仅在 CLOSING 状态下有效，返回是否成功触发重开。
         """
         if self.state == ElevatorState.CLOSING:
+            opened = self.door_open_fraction
             self.state = ElevatorState.OPENING
-            self._action_timer = 0
+            # Reverse from the current physical aperture instead of snapping shut.
+            self._action_timer = opened * self.door_open_time
             return True
         return False
 

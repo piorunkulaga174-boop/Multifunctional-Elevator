@@ -9,6 +9,21 @@ from dataclasses import dataclass
 from typing import Optional
 
 
+class PassengerIdAllocator:
+    """One ID sequence shared by regular traffic and incidental pedestrians."""
+
+    def __init__(self):
+        self.next_id = 1
+
+    def reserve(self, pid: int) -> None:
+        self.next_id = max(self.next_id, pid + 1)
+
+    def allocate(self) -> int:
+        pid = self.next_id
+        self.next_id += 1
+        return pid
+
+
 class PassengerStatus(enum.Enum):
     """乘客生命周期状态。"""
     WAITING = "waiting"        # 正在厅外等待电梯

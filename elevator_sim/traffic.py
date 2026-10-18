@@ -9,7 +9,7 @@ import random
 from typing import List, Tuple
 
 import config
-from .passenger import Passenger, PassengerStatus
+from .passenger import Passenger, PassengerStatus, PassengerIdAllocator
 
 
 class TrafficGenerator:
@@ -22,14 +22,15 @@ class TrafficGenerator:
                  rng: random.Random,
                  down_to_1f: float = config.TRAFFIC_DOWN_TO_1F,
                  up_from_1f: float = config.TRAFFIC_UP_FROM_1F,
-                 mid_floor: float = config.TRAFFIC_MID_FLOOR):
+                 mid_floor: float = config.TRAFFIC_MID_FLOOR,
+                 id_allocator: PassengerIdAllocator = None):
         self.total_floors = total_floors
         self.arrival_rate = arrival_rate
         self.abandon_probability = abandon_probability
         self.abandon_min_wait = abandon_min_wait
         self.abandon_max_wait = abandon_max_wait
         self.rng = rng
-        self._next_pid = 1
+        self.id_allocator = id_allocator or PassengerIdAllocator()
         # 客流方向分布（真实楼宇：大部分下楼到1层）
         self.down_to_1f = down_to_1f
         self.up_from_1f = up_from_1f
@@ -73,14 +74,13 @@ class TrafficGenerator:
             abandon_time = now + self.rng.randint(self.abandon_min_wait,
                                                   self.abandon_max_wait)
         passenger = Passenger(
-            pid=self._next_pid,
+            pid=self.id_allocator.allocate(),
             origin=origin,
             target=target,
             call_time=now,
             direction=direction,
             abandon_time=abandon_time,
         )
-        self._next_pid += 1
         return [passenger]
 
     def update_abandonment(self, passengers: List[Passenger], now: int) -> List[Passenger]:

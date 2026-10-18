@@ -12,13 +12,14 @@
 
 import random
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Iterable, Optional
 
 import config
 from .door_safety import DoorSafetySystem
 from .elevator import Elevator, ElevatorState
 from .load_cell import LoadCell
-from .passenger import Passenger, PassengerStatus
+from .passenger import Passenger, PassengerStatus, PassengerIdAllocator
+from .scenario import PassengerRequest
 from .radar import RadarSystem
 from .traffic import TrafficGenerator
 
@@ -79,7 +80,8 @@ class Simulation:
                  radar_enabled: bool = True,
                  load_cell_enabled: bool = True,
                  anti_pinch_enabled: bool = True,
-                 hold_extension_enabled: bool = True):
+                 hold_extension_enabled: bool = True,
+                 requests: Optional[Iterable[PassengerRequest]] = None):
         self.now = 0
         self.duration = duration
         self.print_event = print_event
@@ -92,6 +94,15 @@ class Simulation:
 
         rng = random.Random(seed)
         self.rng = rng
+        # Incidental pedestrians must never consume the ordinary traffic RNG.
+        self.pedestrian_rng = random.Random(f"pedestrians:{seed}")
+        self.id_allocator = PassengerIdAllocator()
+        self._request_schedule = None
+        if requests is not None:
+            self._request_schedule = {}
+            for request in requests:
+                request.validate(total_floors, duration)
+                self._request_schedule.setdefault(request.call_time, []).append(request)
 
         self.elevator = Elevator(
             total_floors=total_floors,
@@ -107,6 +118,7 @@ class Simulation:
             abandon_min_wait=config.ABANDON_MIN_WAIT,
             abandon_max_wait=config.ABANDON_MAX_WAIT,
             rng=rng,
+            id_allocator=self.id_allocator,
         )
         # 阶段2：毫米波雷达系统
         self.radar = RadarSystem(total_floors=total_floors, enabled=radar_enabled)
@@ -159,7 +171,15 @@ class Simulation:
 
         # 1. 客流生成（仅在客流时段内）
         if self.now < self.duration:
-            for p in self.traffic.maybe_generate(self.now):
+            if self._request_schedule is None:
+                arrivals = self.traffic.maybe_generate(self.now)
+            else:
+                arrivals = [Passenger(
+                    pid=self.id_allocator.allocate(), origin=r.origin, target=r.target,
+                    call_time=r.call_time, direction=1 if r.target > r.origin else -1,
+                    abandon_time=r.abandon_time)
+                    for r in self._request_schedule.get(self.now, ())]
+            for p in arrivals:
                 self.passengers.append(p)
                 self.elevator.add_hall_call(p.origin, p.direction)
                 result["new_call"].append(p)
@@ -258,6 +278,7 @@ class Simulation:
             if has_same_dir_waiting:
                 # 让新到达的乘客进厢
                 boarders, _ = self._board_waiting_passengers()
+                result["boarders"].extend(boarders)
                 # 如果本次开门之前被判定为空停，但现在有乘客进来了，回滚空停计数
                 if (boarders and getattr(self, "_last_open_was_empty", False)
                         and getattr(self, "_last_open_floor", None) == floor):
@@ -432,11 +453,13 @@ class Simulation:
             direction = 1
         # 根据方向选择目标楼层
         if direction == 1:
-            target = self.rng.randint(floor + 1, total)
+            target = self.pedestrian_rng.randint(floor + 1, total)
         else:
-            target = self.rng.randint(1, floor - 1)
+            target = self.pedestrian_rng.randint(1, floor - 1)
 
-        pid = max((p.pid for p in self.passengers), default=0) + 1
+        # Also reserve IDs of manually injected passengers used by older clients.
+        self.id_allocator.reserve(max((p.pid for p in self.passengers), default=0))
+        pid = self.id_allocator.allocate()
         p = Passenger(
             pid=pid,
             origin=floor,

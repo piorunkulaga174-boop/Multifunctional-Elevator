@@ -12,8 +12,11 @@
 """
 
 import csv
+import argparse
+import json
 import os
 import sys
+from pathlib import Path
 from typing import Dict, List
 
 import matplotlib
@@ -24,6 +27,7 @@ import numpy as np
 # 确保能导入项目模块
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from elevator_sim.simulation import Simulation
+from elevator_sim.scenario import generate_requests, scenario_document, scenario_hash
 
 
 # ==================== 实验配置 ====================
@@ -60,7 +64,6 @@ EXPERIMENTS = [
         "load_cell_enabled": True,
         "anti_pinch_enabled": True,
         "hold_extension_enabled": True,
-        "pedestrian_prob": 0.15,
         "color": "#66bb6a",
     },
 ]
@@ -82,8 +85,17 @@ METRICS = [
 ]
 
 
-def run_single_experiment(exp_config: dict, seed: int) -> Dict:
+def make_scenario(seed):
+    return generate_requests(seed, duration=SIMULATION_DURATION,
+                             arrival_rate=ARRIVAL_RATE,
+                             abandon_probability=ABANDON_PROB)
+
+
+def run_single_experiment(exp_config: dict, seed: int, requests=None) -> Dict:
     """运行单次仿真，返回指标字典。"""
+    if exp_config.get("pedestrian_prob", 0):
+        raise ValueError("paired experiments cannot add policy-dependent pedestrians; use the demos")
+    requests = tuple(make_scenario(seed) if requests is None else requests)
     sim = Simulation(
         duration=SIMULATION_DURATION,
         seed=seed,
@@ -95,11 +107,14 @@ def run_single_experiment(exp_config: dict, seed: int) -> Dict:
         load_cell_enabled=exp_config["load_cell_enabled"],
         anti_pinch_enabled=exp_config["anti_pinch_enabled"],
         hold_extension_enabled=exp_config["hold_extension_enabled"],
+        requests=requests,
     )
-    # 全功能组开启防夹行人演示（默认关闭，避免干扰基础测试）
-    if exp_config.get("pedestrian_prob"):
-        sim.door_safety.pedestrian_prob = exp_config["pedestrian_prob"]
+    # Performance comparison uses identical pre-generated demand. Incidental
+    # pedestrian demonstrations belong to separate safety scenarios.
+    sim.door_safety.pedestrian_prob = 0.0
     report = sim.run()
+    if not sim.is_finished() or report.total_passengers != len(requests):
+        raise RuntimeError("paired experiment did not finish with the frozen input")
 
     # 计算最长等待时间
     wait_times = [p.wait_time for p in sim.passengers
@@ -108,6 +123,7 @@ def run_single_experiment(exp_config: dict, seed: int) -> Dict:
 
     return {
         "seed": seed,
+        "scenario_sha256": scenario_hash(requests),
         "total_passengers": report.total_passengers,
         "completed_passengers": report.completed_passengers,
         "abandoned_passengers": report.abandoned_passengers,
@@ -123,13 +139,14 @@ def run_single_experiment(exp_config: dict, seed: int) -> Dict:
     }
 
 
-def run_experiment_group(exp_config: dict) -> List[Dict]:
+def run_experiment_group(exp_config: dict, scenarios=None) -> List[Dict]:
     """运行一组实验（多次不同种子），返回每次的结果列表。"""
     results = []
     for i in range(NUM_ROUNDS):
         seed = BASE_SEED + i
         print(f"  运行 {exp_config['name']} 第 {i+1}/{NUM_ROUNDS} 次 (seed={seed})...")
-        result = run_single_experiment(exp_config, seed)
+        result = run_single_experiment(exp_config, seed,
+                                       None if scenarios is None else scenarios[seed])
         results.append(result)
     return results
 
@@ -140,27 +157,28 @@ def average_results(results: List[Dict]) -> Dict:
         return {}
     avg = {}
     for key in results[0]:
-        if key == "seed":
+        if key in ("seed", "scenario_sha256"):
             continue
         values = [r[key] for r in results]
         avg[key] = round(sum(values) / len(values), 2)
     return avg
 
 
-def save_csv(all_results: Dict[str, List[Dict]], avg_results: Dict[str, Dict]):
+def save_csv(all_results: Dict[str, List[Dict]], avg_results: Dict[str, Dict],
+             output_dir=None):
     """保存实验数据到CSV。"""
-    output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "experiments")
+    output_dir = str(output_dir or Path(__file__).parent / "experiments" / "paired_v1")
     os.makedirs(output_dir, exist_ok=True)
 
     # 1. 详细数据（每次实验）
     detail_path = os.path.join(output_dir, "experiment_detail.csv")
     with open(detail_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)
-        header = ["实验组", "种子"] + [label for _, label in METRICS]
+        header = ["实验组", "种子", "输入场景SHA256"] + [label for _, label in METRICS]
         writer.writerow(header)
         for exp_name, results in all_results.items():
             for r in results:
-                row = [exp_name, r["seed"]] + [r[key] for key, _ in METRICS]
+                row = [exp_name, r["seed"], r["scenario_sha256"]] + [r[key] for key, _ in METRICS]
                 writer.writerow(row)
     print(f"详细数据已保存: {detail_path}")
 
@@ -214,7 +232,7 @@ def plot_comparison(avg_results: Dict[str, Dict], output_dir: str):
     ax = axes[1, 0]
     values = [avg_results[n]["completed_passengers"] for n in exp_names]
     bars = ax.bar(exp_names, values, color=colors)
-    ax.set_title("600秒内完成行程数", fontsize=13)
+    ax.set_title("完成行程数（含客流结束后的收尾）", fontsize=13)
     ax.set_ylabel("人")
     for bar, v in zip(bars, values):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,
@@ -254,7 +272,7 @@ def plot_comparison(avg_results: Dict[str, Dict], output_dir: str):
     ax = axes[1]
     values = [avg_results[n]["anti_pinch_reopens"] for n in exp_names]
     bars = ax.bar(exp_names, values, color=colors)
-    ax.set_title("防夹重开次数（避免夹人）", fontsize=13)
+    ax.set_title("防夹重开次数（仿真触发）", fontsize=13)
     ax.set_ylabel("次")
     for bar, v in zip(bars, values):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1,
@@ -296,6 +314,9 @@ def print_summary(avg_results: Dict[str, Dict]):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="相同冻结客流的配对实验")
+    parser.add_argument("--output", type=Path, default=Path(__file__).parent / "experiments" / "paired_v1")
+    args = parser.parse_args()
     print("=" * 60)
     print("  阶段5：全系统联调与对照实验")
     print(f"  每组 {NUM_ROUNDS} 次仿真，每次 {SIMULATION_DURATION} 秒")
@@ -303,10 +324,12 @@ def main():
 
     all_results = {}
     avg_results = {}
+    scenarios = {BASE_SEED + i: make_scenario(BASE_SEED + i)
+                 for i in range(NUM_ROUNDS)}
 
     for exp in EXPERIMENTS:
         print(f"\n>>> 实验组：{exp['name']}")
-        results = run_experiment_group(exp)
+        results = run_experiment_group(exp, scenarios)
         all_results[exp["name"]] = results
         avg_results[exp["name"]] = average_results(results)
 
@@ -314,7 +337,19 @@ def main():
     print_summary(avg_results)
 
     # 保存CSV
-    output_dir = save_csv(all_results, avg_results)
+    for i in range(NUM_ROUNDS):
+        hashes = {rows[i]["scenario_sha256"] for rows in all_results.values()}
+        if len(hashes) != 1:
+            raise RuntimeError("input mismatch between experiment groups")
+    output_dir = save_csv(all_results, avg_results, args.output)
+    input_dir = Path(output_dir) / "inputs"
+    input_dir.mkdir(exist_ok=True)
+    for seed, requests in scenarios.items():
+        document = scenario_document(requests)
+        document.update(seed=seed, duration=SIMULATION_DURATION,
+                        sha256=scenario_hash(requests))
+        (input_dir / f"seed_{seed}.json").write_text(
+            json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # 生成图表
     chart1, chart2 = plot_comparison(avg_results, output_dir)
