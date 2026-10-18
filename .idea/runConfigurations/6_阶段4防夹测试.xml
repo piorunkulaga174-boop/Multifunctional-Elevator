@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="6_阶段4防夹测试" type="PythonConfigurationType" factoryName="Python">
+    <module name="Multifunctional_Elevator" />
+    <option name="INTERPRETER_OPTIONS" value="-m unittest tests.test_stage4 -v" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="IS_MODULE_SDK" value="true" />
+    <method v="2" />
+  </configuration>
+</component>

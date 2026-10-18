@@ -1,0 +1,30 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+out/
+
+# ===== 虚拟环境 =====
+.venv/
+venv/
+env/
+
+# ===== PyCharm / JetBrains（保留运行配置，忽略个人状态） =====
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/shelf/
+.idea/httpRequests/
+.idea/deployment.xml
+.idea/dataSources/
+.idea/libraries/
+
+# ===== 临时文件 =====
+_temp_shot.py
+*.log
+*.bak

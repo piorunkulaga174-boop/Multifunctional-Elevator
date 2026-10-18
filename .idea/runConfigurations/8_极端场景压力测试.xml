@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="8_极端场景压力测试" type="PythonConfigurationType" factoryName="Python">
+    <module name="Multifunctional_Elevator" />
+    <option name="SCRIPT_PATH" value="$PROJECT_DIR$/stress_test.py" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="IS_MODULE_SDK" value="true" />
+    <method v="2" />
+  </configuration>
+</component>
