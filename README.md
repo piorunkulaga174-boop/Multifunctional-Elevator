@@ -1,5 +1,20 @@
 # 多功能电梯智能呼梯仿真系统
 
+## Fork 开发版 Blender 三维演示
+
+本分支新增可编辑的 Blender 工程：单梯大厅、十层建筑剖面和随轿厢观察三个视角，包含正常乘梯与防夹重开两个确定性场景。工程内动画已烘焙，打开后无需启用脚本自动运行。
+
+- [Blender 使用与重建说明](docs/Blender演示使用说明.md)
+- [正常乘梯工程](assets/blender/normal_ride.blend) · [防夹工程](assets/blender/anti_pinch.blend)
+- [正常乘梯视频](media/demos/normal_ride.mp4) · [防夹演示视频](media/demos/anti_pinch.mp4)
+- [修正后的同客流配对实验](experiments/paired_v1/README.md)
+
+普通客流与临近行人现在共用编号分配器；实验先冻结客流，再给三组重复使用，并在每次结果中保存输入 SHA-256。防夹重开从当前门开度反向，避免画面先瞬间关门再重开。
+
+![Blender 单梯大厅](assets/previews/normal_hall.png)
+
+![十层建筑剖面](assets/previews/full_section.png)
+
 > ## ⚠️ 免责声明（请务必阅读）
 > 本项目是**纯软件仿真与教学研究项目**，所有雷达监测、负重检测、防夹保护等功能均由代码逻辑模拟，**不涉及任何真实电梯硬件改造，不接入、不控制任何真实电梯设备**。
 >
@@ -153,7 +168,7 @@ python experiment.py     # 三组对照实验（普通/仅雷达/全功能），
 python stress_test.py    # 极端场景压力测试（早高峰/高放弃率/低载重）
 ```
 
-实验结果保存在 `experiments/` 目录，包含详细数据CSV、对比图表和完整报告。
+当前配对实验结果保存在 `experiments/paired_v1/`，其中 `inputs/` 保存逐种子的固定客流。`experiments/` 根目录保留旧版数据供追溯。防夹专门演示单独运行，不再只给全功能组增加额外行人。
 
 ## 八、阶段1功能说明
 

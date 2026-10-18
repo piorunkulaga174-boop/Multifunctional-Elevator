@@ -1,0 +1,589 @@
+{
+  "schema_version": 1,
+  "name": "normal_ride",
+  "total_floors": 10,
+  "floor_height_m": 3.5,
+  "model_tick_seconds": 1,
+  "scenario_sha256": "eae00ee12d6c9f243fac28f4c1953a50053350267b76f09b6f87a7e6da98b20b",
+  "requests": [
+    {
+      "call_time": 0,
+      "origin": 1,
+      "target": 4,
+      "abandon_time": null
+    },
+    {
+      "call_time": 0,
+      "origin": 1,
+      "target": 8,
+      "abandon_time": null
+    }
+  ],
+  "passengers": [
+    {
+      "pid": 1,
+      "origin": 1,
+      "target": 4,
+      "call_time": 0,
+      "direction": 1,
+      "abandon_time": null,
+      "board_time": 2,
+      "arrive_time": 17,
+      "status": "done"
+    },
+    {
+      "pid": 2,
+      "origin": 1,
+      "target": 8,
+      "call_time": 0,
+      "direction": 1,
+      "abandon_time": null,
+      "board_time": 2,
+      "arrive_time": 34,
+      "status": "done"
+    }
+  ],
+  "samples": [
+    {
+      "time": 0,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "opening",
+      "door": 0.0,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 1,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "opening",
+      "door": 0.5,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 2,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 3,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 4,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 5,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 6,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 7,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "closing",
+      "door": 1.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 8,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "closing",
+      "door": 0.5,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 9,
+      "floor": 1.0,
+      "at_floor": 1,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 10,
+      "floor": 1.5,
+      "at_floor": 1,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 11,
+      "floor": 2.0,
+      "at_floor": 2,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 12,
+      "floor": 2.5,
+      "at_floor": 2,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 13,
+      "floor": 3.0,
+      "at_floor": 3,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 14,
+      "floor": 3.5,
+      "at_floor": 3,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 15,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "opening",
+      "door": 0.0,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 16,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "opening",
+      "door": 0.5,
+      "in_car": [
+        1,
+        2
+      ],
+      "load_kg": 150,
+      "reopens": 0
+    },
+    {
+      "time": 17,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 18,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 19,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 20,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 21,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 22,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "closing",
+      "door": 1.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 23,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "closing",
+      "door": 0.5,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 24,
+      "floor": 4.0,
+      "at_floor": 4,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 25,
+      "floor": 4.5,
+      "at_floor": 4,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 26,
+      "floor": 5.0,
+      "at_floor": 5,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 27,
+      "floor": 5.5,
+      "at_floor": 5,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 28,
+      "floor": 6.0,
+      "at_floor": 6,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 29,
+      "floor": 6.5,
+      "at_floor": 6,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 30,
+      "floor": 7.0,
+      "at_floor": 7,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 31,
+      "floor": 7.5,
+      "at_floor": 7,
+      "state": "moving_up",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 32,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "opening",
+      "door": 0.0,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 33,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "opening",
+      "door": 0.5,
+      "in_car": [
+        2
+      ],
+      "load_kg": 75,
+      "reopens": 0
+    },
+    {
+      "time": 34,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 35,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 36,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 37,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 38,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "open",
+      "door": 1.0,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 39,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "closing",
+      "door": 1.0,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 40,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "closing",
+      "door": 0.5,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    },
+    {
+      "time": 41,
+      "floor": 8.0,
+      "at_floor": 8,
+      "state": "idle",
+      "door": 0.0,
+      "in_car": [],
+      "load_kg": 0,
+      "reopens": 0
+    }
+  ],
+  "events": [
+    {
+      "time": 2,
+      "type": "doors_open",
+      "floor": 1
+    },
+    {
+      "time": 2,
+      "type": "boarders",
+      "pid": 1,
+      "floor": 1
+    },
+    {
+      "time": 2,
+      "type": "boarders",
+      "pid": 2,
+      "floor": 1
+    },
+    {
+      "time": 17,
+      "type": "doors_open",
+      "floor": 4
+    },
+    {
+      "time": 17,
+      "type": "leavers",
+      "pid": 1,
+      "floor": 4
+    },
+    {
+      "time": 34,
+      "type": "doors_open",
+      "floor": 8
+    },
+    {
+      "time": 34,
+      "type": "leavers",
+      "pid": 2,
+      "floor": 8
+    }
+  ],
+  "presentation_note": "Walking is staged during door-open dwell; the original model boards instantaneously. No crowd dynamics or hardware validation is claimed."
+}

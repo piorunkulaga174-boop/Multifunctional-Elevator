@@ -28,3 +28,8 @@ env/
 _temp_shot.py
 *.log
 *.bak
+
+# Local tools and generated Blender/video output (rebuild from scripts)
+.tools/
+output/
+*.blend1
