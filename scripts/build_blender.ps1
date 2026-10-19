@@ -24,7 +24,7 @@ $env:OPTIX_CACHE_PATH=Join-Path $projectRoot '.tools\optix-cache'
 $env:CUDA_CACHE_PATH=Join-Path $projectRoot '.tools\cuda-cache'
 foreach($dir in @($env:TEMP,'.local-audit','output\stills','output\preview-frames','assets\previews','media\demos')){New-Item -ItemType Directory -Path $dir -Force | Out-Null}
 function Invoke-BlenderJob($LogName, [string[]]$BlenderArgs){
-    & $BlenderPath --python-exit-code 1 @BlenderArgs *> (Join-Path $projectRoot ".local-audit\$LogName.txt")
+    & $BlenderPath --disable-autoexec --python-exit-code 1 @BlenderArgs *> (Join-Path $projectRoot ".local-audit\$LogName.txt")
     if($LASTEXITCODE -ne 0){throw "Blender failed; see .local-audit/$LogName.txt"}
 }
 if(!$VerifyOnly){

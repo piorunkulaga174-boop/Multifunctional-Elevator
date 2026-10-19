@@ -33,3 +33,13 @@ _temp_shot.py
 .tools/
 output/
 *.blend1
+
+# Local audit receipts and sensitive local configuration
+.local-audit/
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.pfx
+credentials.json
